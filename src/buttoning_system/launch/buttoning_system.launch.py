@@ -47,12 +47,12 @@ def generate_launch_description():
                 'button_threshold': 0.8,
                 'buttonhole_threshold': 0.7,
                 'iou_threshold': 0.01,
-                'camera_width': 640,
-                'camera_height': 480,
-                'camera_fps': 30,
                 'model_path': LaunchConfiguration('model_path'),
                 'use_sim_time': False,
-            }]
+            }],
+            remappings=[
+                ('image_raw', 'camera/color/image_raw'),
+            ]
         ),
         
         # Arm controller node
@@ -70,18 +70,23 @@ def generate_launch_description():
             }]
         ),
         
-        # Optional: RealSense camera node (if using librealsense2)
-        # Node(
-        #     package='realsense2_camera',
-        #     executable='realsense2_camera_node',
-        #     name='realsense_camera',
-        #     output='screen',
-        #     parameters=[{
-        #         'align_depth.enable': True,
-        #         'enable_depth': True,
-        #         'enable_color': True,
-        #         'depth_module.profile': '640x480x30',
-        #         'rgb_camera.profile': '640x480x30',
-        #     }]
-        # ),
+        # RealSense camera node
+        Node(
+            package='buttoning_system',
+            executable='realsense_node',
+            name='realsense_node',
+            output='screen',
+            parameters=[{
+                'color_width': 640,
+                'color_height': 480,
+                'depth_width': 640,
+                'depth_height': 480,
+                'fps': 30,
+                'enable_depth': True,
+                'enable_color': True,
+                'align_depth_to_color': True,
+                'camera_name': 'camera',
+                'serial_number': '',
+            }]
+        ),
     ])

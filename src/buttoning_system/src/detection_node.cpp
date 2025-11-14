@@ -12,16 +12,14 @@ DetectionNode::DetectionNode()
       max_age_(10),
       min_hits_(1),
       not_found_counter_(0),
-      hand_detected_(false)
+      hand_detected_(false),
+      frame_received_(false)
 {
     // Declare and get parameters
     this->declare_parameter("max_detections", 10);
     this->declare_parameter("button_threshold", 0.8);
     this->declare_parameter("buttonhole_threshold", 0.7);
     this->declare_parameter("iou_threshold", 0.01);
-    this->declare_parameter("camera_width", 640);
-    this->declare_parameter("camera_height", 480);
-    this->declare_parameter("camera_fps", 30);
     this->declare_parameter("model_path", "");
     
     max_detections_ = this->get_parameter("max_detections").as_int();
@@ -35,14 +33,14 @@ DetectionNode::DetectionNode()
     debug_image_pub_ = this->create_publisher<sensor_msgs::msg::Image>(
         "debug_image", 10);
     
-    // Create subscribers
+    // Create subscriber for camera image (topic name can be remapped in launch file)
+    image_sub_ = this->create_subscription<sensor_msgs::msg::Image>(
+        "image_raw", 10,
+        std::bind(&DetectionNode::imageCallback, this, std::placeholders::_1));
+    
     hand_sub_ = this->create_subscription<buttoning_msgs::msg::HandLandmarks>(
         "hand_landmarks", 10,
         std::bind(&DetectionNode::handLandmarksCallback, this, std::placeholders::_1));
-    
-    // TODO: Initialize RealSense camera
-    // pipeline_.start(config);
-    // align_to_depth_ = rs2::align(RS2_STREAM_DEPTH);
     
     // TODO: Initialize detection model (ONNX Runtime or TensorRT)
     // Load model from parameter "model_path"
@@ -60,30 +58,23 @@ DetectionNode::DetectionNode()
 }
 
 DetectionNode::~DetectionNode() {
-    // TODO: Cleanup camera and model resources
-    // pipeline_.stop();
     RCLCPP_INFO(this->get_logger(), "Detection node shutting down");
 }
 
+void DetectionNode::imageCallback(const sensor_msgs::msg::Image::SharedPtr msg) {
+    try {
+        cv_bridge::CvImagePtr cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::RGB8);
+        current_frame_ = cv_ptr->image.clone();
+        frame_received_ = true;
+    } catch (cv_bridge::Exception& e) {
+        RCLCPP_ERROR(this->get_logger(), "cv_bridge exception: %s", e.what());
+    }
+}
+
 void DetectionNode::mainLoop() {
-    auto start_total = std::chrono::high_resolution_clock::now();
-    
-    // TODO: Get frames from RealSense camera
-    // auto frames = pipeline_.wait_for_frames();
-    // auto aligned_frames = align_to_depth_.process(frames);
-    // auto color_frame = aligned_frames.get_color_frame();
-    // auto depth_frame = aligned_frames.get_depth_frame();
-    
-    // PLACEHOLDER: Simulate frame capture
-    // In real implementation, convert rs2::frame to cv::Mat
-    // current_frame_ = cv::Mat(...);
-    
-    auto rs2_end = std::chrono::high_resolution_clock::now();
-    rs2_time_ = std::chrono::duration<double>(rs2_end - start_total).count();
-    
-    if (current_frame_.empty()) {
-        RCLCPP_WARN_THROTTLE(this->get_logger(), *this->get_clock(), 1000,
-                             "No frame available");
+    if (!frame_received_) {
+        RCLCPP_WARN_THROTTLE(this->get_logger(), *this->get_clock(), 5000,
+                             "Waiting for images on 'image_raw' topic...");
         return;
     }
     
@@ -172,8 +163,8 @@ void DetectionNode::runObjectDetection(const cv::Mat& frame) {
     detection_pub_->publish(std::move(detection_msg));
     
     RCLCPP_DEBUG(this->get_logger(), 
-                 "RS2: %.3f, Preproc: %.3f, Inference: %.3f, Tracking: %.3f",
-                 rs2_time_, preproc_time_, inference_time_, tracking_time_);
+                 "Preproc: %.3f, Inference: %.3f, Tracking: %.3f",
+                 preproc_time_, inference_time_, tracking_time_);
 }
 
 void DetectionNode::applyPerClassThreshold() {

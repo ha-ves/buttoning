@@ -21,7 +21,7 @@ find_package(buttoning_msgs REQUIRED)
 find_package(OpenCV REQUIRED)
 
 # Optional dependencies (comment out if not available)
-# find_package(realsense2 REQUIRED)
+find_package(realsense2 REQUIRED)
 # find_package(onnxruntime REQUIRED)
 
 include_directories(
@@ -85,11 +85,28 @@ target_link_libraries(arm_controller_node
   ${OpenCV_LIBS}
 )
 
+# RealSense camera node executable
+add_executable(realsense_node
+  src/realsense_node.cpp
+)
+target_link_libraries(realsense_node
+  ${buttoning_msgs_TARGETS}
+  ${geometry_msgs_TARGETS}
+  ${sensor_msgs_TARGETS}
+  ${std_msgs_TARGETS}
+  cv_bridge::cv_bridge
+  image_transport::image_transport
+  rclcpp::rclcpp
+  ${OpenCV_LIBS}
+  ${realsense2_LIBRARY}
+)
+
 # Install executables
 install(TARGETS
   detection_node
   hand_detection_node
   arm_controller_node
+  realsense_node
   DESTINATION lib/${PROJECT_NAME}
 )
 

@@ -1,0 +1,56 @@
+# RealSense Camera Configuration
+# Configure these parameters based on your RealSense camera model and requirements
+
+realsense_node:
+  ros__parameters:
+    # Image resolution
+    color_width: 640
+    color_height: 480
+    depth_width: 640
+    depth_height: 480
+    
+    # Frame rate (fps)
+    fps: 30
+    
+    # Enable/disable streams
+    enable_depth: true
+    enable_color: true
+    
+    # Align depth frames to color frames
+    align_depth_to_color: true
+    
+    # Camera name (used as namespace for topics)
+    camera_name: "camera"
+    
+    # Serial number (leave empty to use any available camera)
+    # Use "rs-enumerate-devices" to find your camera's serial number
+    serial_number: ""
+
+# Alternative configurations for different use cases:
+
+# High resolution configuration (commented out)
+# realsense_node:
+#   ros__parameters:
+#     color_width: 1280
+#     color_height: 720
+#     depth_width: 1280
+#     depth_height: 720
+#     fps: 30
+
+# High frame rate configuration (commented out)
+# realsense_node:
+#   ros__parameters:
+#     color_width: 640
+#     color_height: 480
+#     depth_width: 640
+#     depth_height: 480
+#     fps: 60
+
+# Depth only configuration (commented out)
+# realsense_node:
+#   ros__parameters:
+#     enable_depth: true
+#     enable_color: false
+#     depth_width: 640
+#     depth_height: 480
+#     fps: 30

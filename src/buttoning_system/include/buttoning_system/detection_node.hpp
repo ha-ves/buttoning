@@ -14,9 +14,6 @@
 #include <memory>
 #include <vector>
 
-// Placeholder for RealSense (replace with actual librealsense2 headers)
-// #include <librealsense2/rs.hpp>
-
 // Placeholder for detectron2-like inference (use ONNX Runtime or TensorRT)
 // #include <onnxruntime_cxx_api.h>
 // #include <tensorrt/NvInfer.h>
@@ -35,6 +32,7 @@ private:
     void applyPerClassThreshold();
     void runTracking();
     void handLandmarksCallback(const buttoning_msgs::msg::HandLandmarks::SharedPtr msg);
+    void imageCallback(const sensor_msgs::msg::Image::SharedPtr msg);
     
     // Publishers
     rclcpp::Publisher<buttoning_msgs::msg::Detection>::SharedPtr detection_pub_;
@@ -42,13 +40,10 @@ private:
     
     // Subscribers
     rclcpp::Subscription<buttoning_msgs::msg::HandLandmarks>::SharedPtr hand_sub_;
+    rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr image_sub_;
     
     // Timer for main loop
     rclcpp::TimerBase::SharedPtr main_timer_;
-    
-    // Camera-related (placeholder for RealSense pipeline)
-    // rs2::pipeline pipeline_;
-    // rs2::align align_to_depth_;
     
     // Detection model (placeholder for ONNX/TensorRT)
     // std::unique_ptr<Ort::Session> onnx_session_;
@@ -67,6 +62,7 @@ private:
     std::vector<int> track_ids_;
     
     bool hand_detected_;
+    bool frame_received_;
     buttoning_msgs::msg::HandLandmarks::SharedPtr latest_hand_landmarks_;
     
     // Parameters
@@ -82,7 +78,6 @@ private:
     cv::Mat dist_coeffs_;
     
     // Performance metrics
-    double rs2_time_;
     double preproc_time_;
     double inference_time_;
     double tracking_time_;
