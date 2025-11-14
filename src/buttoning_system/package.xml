@@ -1,11 +1,15 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<!-- Copyright (C) 2025 Ha ves
+     This project is licensed under AGPL-3.0-or-later.
+     See LICENSE and https://www.gnu.org/licenses/agpl-3.0.en.html for details.
+-->
 <package format="3">
   <name>buttoning_system</name>
   <version>0.1.0</version>
   <description>ROS2 nodes for dual-arm buttoning system with vision and robot control</description>
-  <maintainer email="user@todo.todo">Your Name</maintainer>
-  <license>Apache-2.0</license>
+  <author email="haves@tekat.my.id">Ha ves</author>
+  <license>AGPL-3.0-or-later</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

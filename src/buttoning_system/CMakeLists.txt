@@ -27,6 +27,7 @@ find_package(OpenCV REQUIRED)
 include_directories(
   include
   ${OpenCV_INCLUDE_DIRS}
+  ${cv_bridge_INCLUDE_DIRS}
 )
 
 set(dependencies
@@ -43,22 +44,46 @@ set(dependencies
 add_executable(detection_node
   src/detection_node.cpp
 )
-ament_target_dependencies(detection_node ${dependencies})
-target_link_libraries(detection_node ${OpenCV_LIBS})
+target_link_libraries(detection_node
+  ${buttoning_msgs_TARGETS}
+  ${geometry_msgs_TARGETS}
+  ${sensor_msgs_TARGETS}
+  ${std_msgs_TARGETS}
+  cv_bridge::cv_bridge
+  image_transport::image_transport
+  rclcpp::rclcpp
+  ${OpenCV_LIBS}
+)
 
 # Hand detection node executable
 add_executable(hand_detection_node
   src/hand_detection_node.cpp
 )
-ament_target_dependencies(hand_detection_node ${dependencies})
-target_link_libraries(hand_detection_node ${OpenCV_LIBS})
+target_link_libraries(hand_detection_node
+  ${buttoning_msgs_TARGETS}
+  ${geometry_msgs_TARGETS}
+  ${sensor_msgs_TARGETS}
+  ${std_msgs_TARGETS}
+  cv_bridge::cv_bridge
+  image_transport::image_transport
+  rclcpp::rclcpp
+  ${OpenCV_LIBS}
+)
 
 # Arm controller node executable
 add_executable(arm_controller_node
   src/arm_controller_node.cpp
 )
-ament_target_dependencies(arm_controller_node ${dependencies})
-target_link_libraries(arm_controller_node ${OpenCV_LIBS})
+target_link_libraries(arm_controller_node
+  ${buttoning_msgs_TARGETS}
+  ${geometry_msgs_TARGETS}
+  ${sensor_msgs_TARGETS}
+  ${std_msgs_TARGETS}
+  cv_bridge::cv_bridge
+  image_transport::image_transport
+  rclcpp::rclcpp
+  ${OpenCV_LIBS}
+)
 
 # Install executables
 install(TARGETS
