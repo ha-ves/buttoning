@@ -46,8 +46,8 @@ DetectionNode::DetectionNode()
     // Load model from parameter "model_path"
     // onnx_session_ = std::make_unique<Ort::Session>(...);
     
-    // TODO: Initialize SORT tracker
-    // tracker_ = std::make_unique<SortTracker>(iou_threshold_, max_age_, min_hits_);
+    // Initialize SORT tracker
+    tracker_ = std::make_unique<SortTracker>(max_age_, min_hits_, iou_threshold_);
     
     // Create timer for main loop (30 Hz)
     main_timer_ = this->create_wall_timer(
@@ -189,18 +189,18 @@ void DetectionNode::applyPerClassThreshold() {
 void DetectionNode::runTracking() {
     auto start_tracking = std::chrono::high_resolution_clock::now();
     
-    // TODO: Implement SORT tracking
-    // tracker_->update(pred_boxes_, pred_scores_);
-    // track_ids_ = tracker_->get_track_ids();
+    // Run SORT tracking
+    auto tracked_objects = tracker_->update(pred_boxes_, pred_scores_);
     
-    // PLACEHOLDER: Assign dummy track IDs
-    track_ids_.clear();
-    for (size_t i = 0; i < pred_boxes_.size(); ++i) {
-        track_ids_.push_back(static_cast<int>(i));
-    }
+    // Get track IDs in order of detections
+    track_ids_ = tracker_->getTrackIds();
     
     auto end_tracking = std::chrono::high_resolution_clock::now();
     tracking_time_ = std::chrono::duration<double>(end_tracking - start_tracking).count();
+    
+    RCLCPP_DEBUG(this->get_logger(), 
+                 "Tracking: %zu detections, %zu active tracks",
+                 pred_boxes_.size(), tracker_->getNumTracks());
 }
 
 void DetectionNode::handLandmarksCallback(

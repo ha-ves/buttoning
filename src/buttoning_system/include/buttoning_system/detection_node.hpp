@@ -14,6 +14,8 @@
 #include <memory>
 #include <vector>
 
+#include "buttoning_system/sort_tracker.hpp"
+
 // Placeholder for detectron2-like inference (use ONNX Runtime or TensorRT)
 // #include <onnxruntime_cxx_api.h>
 // #include <tensorrt/NvInfer.h>
@@ -49,8 +51,8 @@ private:
     // std::unique_ptr<Ort::Session> onnx_session_;
     // std::unique_ptr<nvinfer1::ICudaEngine> trt_engine_;
     
-    // Tracking (placeholder for SORT tracker)
-    // std::unique_ptr<SortTracker> tracker_;
+    // SORT tracker
+    std::unique_ptr<SortTracker> tracker_;
     
     // State variables
     cv::Mat current_frame_;

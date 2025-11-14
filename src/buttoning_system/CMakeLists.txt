@@ -19,6 +19,7 @@ find_package(cv_bridge REQUIRED)
 find_package(image_transport REQUIRED)
 find_package(buttoning_msgs REQUIRED)
 find_package(OpenCV REQUIRED)
+find_package(Eigen3 REQUIRED)
 
 # Optional dependencies (comment out if not available)
 find_package(realsense2 REQUIRED)
@@ -28,6 +29,7 @@ include_directories(
   include
   ${OpenCV_INCLUDE_DIRS}
   ${cv_bridge_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
 )
 
 set(dependencies
@@ -43,6 +45,7 @@ set(dependencies
 # Detection node executable
 add_executable(detection_node
   src/detection_node.cpp
+  src/sort_tracker.cpp
 )
 target_link_libraries(detection_node
   ${buttoning_msgs_TARGETS}
@@ -68,6 +71,7 @@ target_link_libraries(hand_detection_node
   image_transport::image_transport
   rclcpp::rclcpp
   ${OpenCV_LIBS}
+  Eigen3::Eigen
 )
 
 # Arm controller node executable
