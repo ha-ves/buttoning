@@ -1,0 +1,25 @@
+# Configuration parameters for detection node
+
+/**:
+  ros__parameters:
+    # Detection model parameters
+    max_detections: 10
+    button_threshold: 0.8
+    buttonhole_threshold: 0.7
+    iou_threshold: 0.01
+    
+    # Camera parameters
+    camera_width: 640
+    camera_height: 480
+    camera_fps: 30
+    
+    # Model path
+    model_path: "trainings/onedrv/clothes_button_4_epch500_roi256_lr0.001/"
+    
+    # Tracking parameters
+    max_age: 10
+    min_hits: 1
+    
+    # Performance tuning
+    use_cuda: true
+    use_tensorrt: false

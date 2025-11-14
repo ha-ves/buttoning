@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>buttoning_system</name>
+  <version>0.1.0</version>
+  <description>ROS2 nodes for dual-arm buttoning system with vision and robot control</description>
+  <maintainer email="user@todo.todo">Your Name</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>cv_bridge</depend>
+  <depend>image_transport</depend>
+  <depend>buttoning_msgs</depend>
+  
+  <!-- OpenCV for image processing -->
+  <depend>opencv</depend>
+  
+  <!-- Optional: RealSense camera support -->
+  <!-- <depend>realsense2_camera</depend> -->
+  <!-- <depend>librealsense2</depend> -->
+  
+  <!-- Optional: ONNX Runtime for inference -->
+  <!-- <depend>onnxruntime</depend> -->
+  
+  <!-- Optional: TensorRT for inference -->
+  <!-- <depend>tensorrt</depend> -->
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
