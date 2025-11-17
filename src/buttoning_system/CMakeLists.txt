@@ -25,6 +25,21 @@ find_package(Eigen3 REQUIRED)
 find_package(realsense2 REQUIRED)
 # find_package(onnxruntime REQUIRED)
 
+# Optional: LibTorch for alternative SORT tracker implementation
+find_package(Torch QUIET)
+find_package(TorchVision QUIET)
+if(Torch_FOUND AND TorchVision_FOUND)
+  message(STATUS "LibTorch and TorchVision found - building LibTorch SORT tracker variant")
+  set(BUILD_LIBTORCH_SORT ON)
+elseif(Torch_FOUND AND NOT TorchVision_FOUND)
+  message(STATUS "LibTorch found but TorchVision missing - skipping LibTorch SORT tracker")
+  message(STATUS "  Install TorchVision from: https://github.com/pytorch/vision")
+  set(BUILD_LIBTORCH_SORT OFF)
+else()
+  message(STATUS "LibTorch not found - skipping LibTorch SORT tracker (Eigen version still available)")
+  set(BUILD_LIBTORCH_SORT OFF)
+endif()
+
 include_directories(
   include
   ${OpenCV_INCLUDE_DIRS}
@@ -104,6 +119,27 @@ target_link_libraries(realsense_node
   ${OpenCV_LIBS}
   ${realsense2_LIBRARY}
 )
+
+# LibTorch SORT tracker test executable (optional, only if LibTorch is found)
+if(BUILD_LIBTORCH_SORT)
+  add_executable(test_libtorch_sort
+    src/test_libtorch_sort.cpp
+    src/sort_tracker_libtorch.cpp
+  )
+  target_include_directories(test_libtorch_sort PRIVATE
+    ${TORCH_INCLUDE_DIRS}
+  )
+  target_link_libraries(test_libtorch_sort
+    ${OpenCV_LIBS}
+    ${TORCH_LIBRARIES}
+    TorchVision::TorchVision
+  )
+  
+  # Install LibTorch test executable
+  install(TARGETS test_libtorch_sort
+    DESTINATION lib/${PROJECT_NAME}
+  )
+endif()
 
 # Install executables
 install(TARGETS
