@@ -21,6 +21,18 @@ find_package(buttoning_msgs REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(Eigen3 REQUIRED)
 
+# Define a compile-time macro when the ROS_DISTRO environment variable is 'humble'.
+# Some distributions ship a different cv_bridge header name (.h vs .hpp); allow
+# source files to select the correct header at compile time.
+if(DEFINED ENV{ROS_DISTRO})
+  if("$ENV{ROS_DISTRO}" STREQUAL "humble")
+    message(STATUS "ROS_DISTRO is humble -> defining ROS_DISTRO_HUMBLE")
+    add_definitions(-DROS_DISTRO_HUMBLE)
+  else()
+    message(STATUS "ROS_DISTRO is $ENV{ROS_DISTRO} -> not defining ROS_DISTRO_HUMBLE")
+  endif()
+endif()
+
 # Optional dependencies (comment out if not available)
 find_package(realsense2 REQUIRED)
 # find_package(onnxruntime REQUIRED)
@@ -71,6 +83,7 @@ target_link_libraries(detection_node
   image_transport::image_transport
   rclcpp::rclcpp
   ${OpenCV_LIBS}
+  Eigen3::Eigen
 )
 
 # Hand detection node executable

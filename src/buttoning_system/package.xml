@@ -8,7 +8,7 @@
   <name>buttoning_system</name>
   <version>0.1.0</version>
   <description>ROS2 nodes for dual-arm buttoning system with vision and robot control</description>
-  <author email="haves@tekat.my.id">Ha ves</author>
+  <maintainer email="haves@tekat.my.id">Ha ves</maintainer>
   <license>AGPL-3.0-or-later</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

@@ -1,1 +1,6 @@
-colcon --log-level debug build --base-paths src --merge-install --symlink-install --packages-up-to buttoning_system --cmake-args -DBUILD_TESTING=OFF -DBUILD_TESTS=OFF -DENABLE_TESTS=OFF -DWITH_TESTS=OFF -DCMAKE_BUILD_TYPE="RelWithDebInfo" -Drealsense2_DIR="C:\Program Files (x86)\Intel RealSense SDK 2.0" -DBoost_DIR="C:\local\boost_1_87_0\lib64-msvc-14.3\cmake\Boost-1.87.0"
+colcon --log-level debug build --merge-install --symlink-install ^
+  --base-paths src --packages-up-to buttoning_system ^
+  --cmake-args -DBUILD_TESTING=OFF -DBUILD_TESTS=OFF -DENABLE_TESTS=OFF -DWITH_TESTS=OFF ^
+  -Drealsense2_DIR="C:\Users\admin\source\repos\librealsense\install_l515\lib\cmake\realsense2" ^
+  -DBoost_DIR="C:\local\boost_1_74_0\lib64-msvc-14.1\cmake\Boost-1.74.0" ^
+  -DCMAKE_CONFIGURATION_TYPES=RelWithDebInfo -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPython3_FIND_VIRTUALENV=ONLY
