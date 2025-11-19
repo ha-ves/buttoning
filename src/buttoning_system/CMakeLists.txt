@@ -57,6 +57,7 @@ include_directories(
   ${OpenCV_INCLUDE_DIRS}
   ${cv_bridge_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIRS}
+  ${realsense2_INCLUDE_DIRS}
 )
 
 set(dependencies
